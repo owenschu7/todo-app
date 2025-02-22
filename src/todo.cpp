@@ -2,15 +2,38 @@
 #include "display.h"
 #include <vector>
 #include <string>
-
+#include <fstream>
 
 void removeItem(std::vector<std::string>& vector, std::string str);
 
 int main() {
 
+  //creates a ifstream object named infile
+  std::ifstream infile;
+
+  //create an ofstream object named outfile
+  std::ofstream outfile("data.txt", std::ios::app);
+
+  infile.open("data.txt");
+
+
+  //check for error
+  if (infile.fail() | outfile.fail()) {
+    std::cerr << "Error opening file" << std::endl;
+    return 1;
+  }
+
+
+  std::string item;
+
   //create new vector
   std::vector<std::string> todoList;
 
+  //loop through the infile(data.txt file) to get each line and apppend to todoList vector
+  while(std::getline(infile, item)) {
+    todoList.push_back(item);
+  }
+  
 
   startDisplay();
 
@@ -30,6 +53,10 @@ int main() {
 	std::getline(std::cin, strInput);
 	
 	todoList.push_back(strInput);
+
+	//add item to data.txt
+	outfile << strInput << std:: endl;
+
         startDisplay();
        
        	break;
