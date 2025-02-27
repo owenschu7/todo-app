@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-void removeItem(std::vector<std::string>& vector, std::string str);
+void removeItem(std::vector<std::string>& vector, std::string str, std::ofstream& outfile);
 
 int main() {
 
@@ -33,6 +33,8 @@ int main() {
   while(std::getline(infile, item)) {
     todoList.push_back(item);
   }
+  //close infile
+  infile.close();
   
 
   startDisplay();
@@ -55,7 +57,9 @@ int main() {
 	todoList.push_back(strInput);
 
 	//add item to data.txt
-	outfile << strInput << std:: endl;
+	outfile << strInput << std::endl;
+	//close file
+	outfile.close();
 
         startDisplay();
        
@@ -69,7 +73,7 @@ int main() {
 	std::cin.ignore();
         std::getline(std::cin, strInput);
 
-	removeItem(todoList, strInput);
+	removeItem(todoList, strInput, outfile);
         startDisplay();
 
         break;
@@ -94,13 +98,25 @@ int main() {
   return 0;
 }
 
-void removeItem(std::vector<std::string>& vector, std::string str) {
+void removeItem(std::vector<std::string>& vector, std::string str, std::ofstream& outfile) {
   //find str in vector
   for (int i = 0; i < vector.size(); i++) {
     if (vector[i] == str) {
       //remove vector[i] from vector
       std::cout << "Found item in array, removing it now." << std::endl;
       vector.erase(vector.begin() + i);
+
+      //delete all of data.txt and replace it with new data
+      outfile.open("data.txt", std::ofstream::out | std::ofstream::trunc);
+
+      //loop and attach the contents each value in vector and write it to outfile("data.txt")
+      for (int j = 0; j < vector.size(); j++) {
+	outfile << vector[j] << "\n";
+      }
+      outfile.close();
+
+
+
     }
   }
 }
